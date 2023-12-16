@@ -228,7 +228,7 @@
      <rect>
       <x>80</x>
       <y>280</y>
-      <width>61</width>
+      <width>81</width>
       <height>21</height>
      </rect>
     </property>
@@ -239,9 +239,9 @@
    <widget class="QLabel" name="label_TAGEndTime">
     <property name="geometry">
      <rect>
-      <x>160</x>
+      <x>180</x>
       <y>280</y>
-      <width>61</width>
+      <width>81</width>
       <height>21</height>
      </rect>
     </property>
@@ -252,7 +252,7 @@
    <widget class="QLabel" name="label_TAG_Duration">
     <property name="geometry">
      <rect>
-      <x>240</x>
+      <x>280</x>
       <y>280</y>
       <width>51</width>
       <height>21</height>
@@ -267,7 +267,7 @@
      <rect>
       <x>80</x>
       <y>360</y>
-      <width>61</width>
+      <width>81</width>
       <height>21</height>
      </rect>
     </property>
@@ -278,9 +278,9 @@
    <widget class="QPushButton" name="pushButton_TAGSetEndTime">
     <property name="geometry">
      <rect>
-      <x>160</x>
+      <x>180</x>
       <y>360</y>
-      <width>61</width>
+      <width>81</width>
       <height>21</height>
      </rect>
     </property>
@@ -307,7 +307,7 @@
    <widget class="QPushButton" name="pushButton_TagPlay">
     <property name="geometry">
      <rect>
-      <x>240</x>
+      <x>280</x>
       <y>340</y>
       <width>61</width>
       <height>41</height>
