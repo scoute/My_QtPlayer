@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QDebug>
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -45,13 +46,14 @@ void MainWindow::updateduration(qint64 duration)
     {
         QTime CurrentTime((duration / 3600) % 60, (duration / 60) % 60, duration % 60, duration * 1000 % 1000);
         QTime totalTime((Mduration / 3600) % 60, (Mduration / 60) % 60, Mduration % 60, Mduration * 1000 % 1000);
-        QString format = "mm:ss";
-        //QString format = "mm:ss.z";
+        //QString format = "mm:ss";
+        QString format = "mm:ss.zzz";
 
         // если длительность аудио больше часа, ставим "hh:mm:ss" вместо "mm:ss"
         if (Mduration > 3600)
         {
-            format = "hh:mm:ss";
+            //format = "hh:mm:ss";
+            format = "hh:mm:ss.zzz";
         }
 
         ui->label_CurrTime->setText(CurrentTime.toString(format)); // + " / " + totalTime.toString(format));
@@ -66,6 +68,9 @@ void MainWindow::durationChanged(qint64 duration)
     ui->hSlider_AudioFileDuration->setMaximum(Mduration);
     ui->hSlider_TagTimeBegin->setMaximum(Mduration);
     ui->hSlider_TagTimeEnd->setMaximum(Mduration);
+
+    qDebug() << "ui->hSlider_AudioFileDuration->maximumWidth" <<
+                ui->hSlider_AudioFileDuration->maximumWidth();
 }
 
 
@@ -81,7 +86,8 @@ void MainWindow::positionChanged(qint64 progress)
 
 void MainWindow::on_actionOpen_File_triggered()
 {
-    QString FileName = QFileDialog::getOpenFileName(this,tr("Select Audio File"),tr("MP3 Files (*.MP3)"));
+    QString FileName = QFileDialog::getOpenFileName(this,tr("Select Audio File"),
+                                                         tr("MP3 Files (*.MP3)"));
     M_Player->setMedia(QUrl("file://" + FileName));
 
     QFileInfo File(FileName);
@@ -162,9 +168,13 @@ void MainWindow::on_hSlider_TagTimeEnd_sliderReleased()
 }
 
 
+// при нажатии на кнопку (TAG)BEGIN, копируем время (а по сути текст) с label_CurrTime
+// и положение ползунка с hSlider_AudioFileDuration.
 void MainWindow::on_pushButton_TAGSetBeginTime_clicked()
 {
     ui->label_TAGBeginTime->setText(ui->label_CurrTime->text());
+    //ui->label_TAGBeginTime->setText(M_Player->position());
+
     ui->hSlider_TagTimeBegin->setValue(ui->hSlider_AudioFileDuration->value());
 }
 
