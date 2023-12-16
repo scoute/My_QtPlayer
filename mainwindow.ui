@@ -143,9 +143,9 @@
    <widget class="QLabel" name="label_Total_Time">
     <property name="geometry">
      <rect>
-      <x>460</x>
+      <x>430</x>
       <y>220</y>
-      <width>61</width>
+      <width>91</width>
       <height>21</height>
      </rect>
     </property>
@@ -254,7 +254,7 @@
      <rect>
       <x>280</x>
       <y>280</y>
-      <width>51</width>
+      <width>71</width>
       <height>21</height>
      </rect>
     </property>

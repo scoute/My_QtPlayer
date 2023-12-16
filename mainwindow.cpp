@@ -43,6 +43,33 @@ MainWindow::~MainWindow()
 }
 
 
+QString MainWindow::timeToString(qint64 duration){
+    //QString timestr;
+    if (duration)
+    {
+        /*
+        QTime CurrentTime((duration / 3600) % 60, (duration / 60) % 60, duration % 60, duration * 1000 % 1000);
+        QTime totalTime((Mduration / 3600) % 60, (Mduration / 60) % 60, Mduration % 60, Mduration * 1000 % 1000);
+        */
+
+        QTime CurrentTime((duration / 3600 / 1000) % 60, (duration / 60 / 1000) % 60, (duration / 1000) % 60, duration % 1000);
+        //QTime totalTime((Mduration / 3600 / 1000) % 60, (Mduration / 60 / 1000) % 60, (Mduration / 1000) % 60, Mduration % 1000);
+
+        //QString format = "mm:ss";
+        QString format = "mm:ss.zzz";
+
+        // если длительность аудио больше часа, ставим "hh:mm:ss" вместо "mm:ss"
+        if (Mduration > 3600)
+        {
+            //format = "hh:mm:ss";
+            format = "hh:mm:ss.zzz";
+        }
+
+        return CurrentTime.toString(format);
+    }
+}
+
+
 void MainWindow::updateduration(qint64 duration)
 {
     //QString timestr;
@@ -116,7 +143,6 @@ void MainWindow::on_actionOpen_File_triggered()
 void MainWindow::on_pushButton_Play_clicked()
 {
     M_Player->play();
-
 }
 
 
@@ -146,8 +172,8 @@ void MainWindow::on_hSlider_AudioFileDuration_sliderMoved(int position)
         format = "hh:mm:ss.zzz";
     }
 
-    ui->label_CurrTime->setText(CurrentTime.toString(format));
-    //ui->label_CurrTime->setText(position.toString("mm:ss.zzz"));
+    //ui->label_CurrTime->setText(CurrentTime.toString(format));
+    ui->label_CurrTime->setText(MainWindow::timeToString(position));
 }
 
 
