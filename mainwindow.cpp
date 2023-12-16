@@ -59,7 +59,7 @@ QString MainWindow::timeToString(qint64 duration){
         QString format = "mm:ss.zzz";
 
         // если длительность аудио больше часа, ставим "hh:mm:ss" вместо "mm:ss"
-        if (Mduration > 3600)
+        if (duration > 3600) // тут надо добавить три нуля 000 (потому что учитываются мс)
         {
             //format = "hh:mm:ss";
             format = "hh:mm:ss.zzz";
@@ -95,8 +95,13 @@ void MainWindow::updateduration(qint64 duration)
             format = "hh:mm:ss.zzz";
         }
 
-        ui->label_CurrTime->setText(CurrentTime.toString(format)); // + " / " + totalTime.toString(format));
+        // старый способ конвертации int->text
+        //ui->label_CurrTime->setText(CurrentTime.toString(format)); // + " / " + totalTime.toString(format));
         ui->label_Total_Time->setText(totalTime.toString(format));
+
+        // новый способ конвертации int->text
+        ui->label_CurrTime->setText(MainWindow::timeToString(duration)); // + " / " + totalTime.toString(format));
+        //ui->label_Total_Time->setText(MainWindow::timeToString(Mduration));
     }
 }
 
@@ -160,26 +165,12 @@ void MainWindow::on_hSlider_VolumeControl_valueChanged(int value)
 
 void MainWindow::on_hSlider_AudioFileDuration_sliderMoved(int position)
 { 
-    QTime CurrentTime((position / 3600 / 1000) % 60, (position / 60 / 1000) % 60, (position / 1000) % 60, position % 1000);
-
-    //QString format = "mm:ss";
-    QString format = "mm:ss.zzz";
-
-    // если длительность аудио больше часа, ставим "hh:mm:ss" вместо "mm:ss"
-    if (Mduration > 3600)
-    {
-        //format = "hh:mm:ss";
-        format = "hh:mm:ss.zzz";
-    }
-
-    //ui->label_CurrTime->setText(CurrentTime.toString(format));
     ui->label_CurrTime->setText(MainWindow::timeToString(position));
 }
 
 
 void MainWindow::on_hSlider_AudioFileDuration_sliderReleased()
 {
-    //M_Player->setPosition(ui->hSlider_AudioFileDuration->value()*1000);
     M_Player->setPosition(ui->hSlider_AudioFileDuration->value());
 
     //ui->hSlider_TagTimeBegin->setMaximumWidth(movedposition * 10);
@@ -195,11 +186,7 @@ void MainWindow::on_hSlider_TagTimeBegin_sliderMoved(int position)
 
 void MainWindow::on_hSlider_TagTimeBegin_valueChanged(int value)
 {
-    //QTime CurrentTime((duration / 3600) % 60, (duration / 60) % 60, duration % 60, duration * 1000 % 1000);
-    //QTime totalTime((Mduration / 3600) % 60, (Mduration / 60) % 60, Mduration % 60, Mduration * 1000 % 1000);
-    //QString format = "mm:ss";
-    //ui->label_TAGBeginTime->setText(CurrentTime.toString(format));
-    //ui->label_TAGBeginTime->setText(QString::number( value ).toString("mm:ss"));
+
 }
 
 
