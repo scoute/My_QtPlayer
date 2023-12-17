@@ -157,11 +157,13 @@ void MainWindow::on_hSlider_AudioFileDuration_sliderReleased()
 
 void MainWindow::on_hSlider_TagTimeBegin_sliderMoved(int position)
 {
-    duration_tag_begin=position;
+    if (position <= duration_tag_end) {
+        duration_tag_begin=position;
 
-    ui->label_TAGBeginTime->setText(MainWindow::timeToString(duration_tag_begin));
+        ui->label_TAGBeginTime->setText(MainWindow::timeToString(duration_tag_begin));
 
-    ui->label_TAG_Duration->setText(MainWindow::timeToString(duration_tag_end - duration_tag_begin));
+        ui->label_TAG_Duration->setText(MainWindow::timeToString(duration_tag_end - duration_tag_begin));
+    }
 }
 
 
@@ -173,6 +175,12 @@ void MainWindow::on_hSlider_TagTimeBegin_valueChanged(int value)
 
 void MainWindow::on_hSlider_TagTimeBegin_sliderReleased()
 {
+    if (ui->hSlider_TagTimeBegin->value() > duration_tag_end) {
+        ui->hSlider_TagTimeBegin->setValue(duration_tag_end);
+    }
+
+    qDebug() << "hSlider_TagTimeBegin" << ui->hSlider_TagTimeBegin->value();
+
     /*
     qDebug() << "duration_tag_begin\t" << duration_tag_begin;
     qDebug() << "duration_tag_end\t" << duration_tag_end;
@@ -183,23 +191,27 @@ void MainWindow::on_hSlider_TagTimeBegin_sliderReleased()
 
 void MainWindow::on_hSlider_TagTimeEnd_sliderMoved(int position)
 {
-    duration_tag_end = Mduration - position;
+    if (duration_tag_begin <= Mduration - position) {
+        duration_tag_end = Mduration - position;
 
-    ui->label_TAGEndTime->setText(MainWindow::timeToString(duration_tag_end));
-    //ui->label_TAGEndTime->setText(MainWindow::timeToString(duration_tag_end));
+        ui->label_TAGEndTime->setText(MainWindow::timeToString(duration_tag_end));
+        //ui->label_TAGEndTime->setText(MainWindow::timeToString(duration_tag_end));
 
-    //ui->label_TAG_Duration->setText(MainWindow::timeToString(Mduration - position - duration_tag_begin));
-    ui->label_TAG_Duration->setText(MainWindow::timeToString(duration_tag_end - duration_tag_begin));
+        //ui->label_TAG_Duration->setText(MainWindow::timeToString(Mduration - position - duration_tag_begin));
+        ui->label_TAG_Duration->setText(MainWindow::timeToString(duration_tag_end - duration_tag_begin));
+    }
 }
 
 
 void MainWindow::on_hSlider_TagTimeEnd_sliderReleased()
 {
-    /*
-    qDebug() << "duration_tag_begin\t" << duration_tag_begin;
-    qDebug() << "duration_tag_end\t" << duration_tag_end;
-    qDebug() << "Mduration\t\t" << Mduration;
-    */
+    if ((Mduration - ui->hSlider_TagTimeEnd->value()) < duration_tag_begin) {
+        ui->hSlider_TagTimeEnd->setValue(Mduration - duration_tag_end);
+    }
+
+
+    qDebug() << "hSlider_TagTimeEnd" << Mduration - ui->hSlider_TagTimeEnd->value();
+
 }
 
 
@@ -212,7 +224,15 @@ void MainWindow::on_pushButton_TAGSetBeginTime_clicked()
     ui->label_TAGBeginTime->setText(MainWindow::timeToString(duration_tag_begin));
     ui->hSlider_TagTimeBegin->setValue(ui->hSlider_AudioFileDuration->value());
 
-    ui->label_TAG_Duration->setText(MainWindow::timeToString(duration_tag_end - duration_tag_begin));
+    if (duration_tag_begin > duration_tag_end){
+        duration_tag_end = duration_tag_begin;
+        ui->hSlider_TagTimeEnd->setValue(Mduration - ui->hSlider_TagTimeBegin->value());
+        ui->label_TAGEndTime->setText(ui->label_TAGBeginTime->text());
+        ui->label_TAG_Duration->setText(MainWindow::timeToString(0));
+    } else {
+        ui->label_TAG_Duration->setText(MainWindow::timeToString(duration_tag_end - duration_tag_begin));
+    }
+
 }
 
 
@@ -224,5 +244,14 @@ void MainWindow::on_pushButton_TAGSetEndTime_clicked()
     ui->label_TAGEndTime->setText(MainWindow::timeToString(duration_tag_end));
     ui->hSlider_TagTimeEnd->setValue(Mduration - ui->hSlider_AudioFileDuration->value());
 
-    ui->label_TAG_Duration->setText(MainWindow::timeToString(duration_tag_end - duration_tag_begin));
+    if (duration_tag_end < duration_tag_begin){
+        duration_tag_begin = duration_tag_end;
+        ui->hSlider_TagTimeBegin->setValue(Mduration - ui->hSlider_TagTimeEnd->value());
+        ui->label_TAGBeginTime->setText(ui->label_TAGEndTime->text());
+        ui->label_TAG_Duration->setText(MainWindow::timeToString(0));
+    } else {
+        ui->label_TAG_Duration->setText(MainWindow::timeToString(duration_tag_end - duration_tag_begin));
+    }
+
+
 }
