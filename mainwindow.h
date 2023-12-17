@@ -43,6 +43,8 @@ private slots:
 
   void on_hSlider_TagTimeBegin_valueChanged(int value);
 
+  void on_pushButton_TagPlay_clicked();
+
 private:
   void updateduration(qint64 duration);
   Ui::MainWindow *ui;
@@ -51,5 +53,6 @@ private:
   QString timeToString(qint64 duration);
   qint64 duration_tag_begin;
   qint64 duration_tag_end;
+  bool is_playing_TAG;
 };
 #endif // MAINWINDOW_H

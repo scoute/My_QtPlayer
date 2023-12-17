@@ -62,6 +62,13 @@ QString MainWindow::timeToString(qint64 duration){
 
 void MainWindow::updateduration(qint64 duration)
 {
+    if (is_playing_TAG==true){
+        if (M_Player->position() >= duration_tag_end){
+            is_playing_TAG=false;
+            M_Player->pause();
+        }
+    }
+
     //QString timestr;
     if (duration || Mduration)
     {
@@ -119,6 +126,7 @@ void MainWindow::on_actionOpen_File_triggered()
 
 void MainWindow::on_pushButton_Play_clicked()
 {
+    is_playing_TAG=false;
     M_Player->play();
 }
 
@@ -252,6 +260,15 @@ void MainWindow::on_pushButton_TAGSetEndTime_clicked()
     } else {
         ui->label_TAG_Duration->setText(MainWindow::timeToString(duration_tag_end - duration_tag_begin));
     }
+}
 
+
+void MainWindow::on_pushButton_TagPlay_clicked()
+{
+    is_playing_TAG=true;
+    //M_Player->pause();
+    M_Player->setPosition(duration_tag_begin);
+    M_Player->play();
 
 }
+
