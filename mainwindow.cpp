@@ -31,9 +31,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     //ui->hSlider_TagTimeBegin->setStyleSheet("QSlider::groove:horizontal {background-color:red;}");
     //ui->hSlider_TagTimeBegin->setStyleSheet("QSlider::groove:horizontal { border: 1px solid #999999; height: 8px; background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #B1B1B1, stop:1 #c4c4c4);  margin: 2px 0; }");
-
-    //ui->hSlider_TagTimeBegin->setMaximumWidth(100);
-    //ui->hSlider_TagTimeBegin->setMinimumWidth(200);
 }
 
 
@@ -91,12 +88,6 @@ void MainWindow::durationChanged(qint64 duration)
 
     // в первый раз нет смысла вычислять, разница равна максимальной длительности мелодии.
     ui->label_TAG_Duration->setText(ui->label_TAGEndTime->text());
-
-
-    /*
-    qDebug() << "ui->hSlider_AudioFileDuration->maximumWidth" <<
-                ui->hSlider_AudioFileDuration->maximumWidth();
-    */
 }
 
 
