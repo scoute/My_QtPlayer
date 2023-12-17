@@ -158,7 +158,7 @@ void MainWindow::on_actionOpen_File_triggered()
 // при нажатии на кнопку Play
 void MainWindow::on_pushButton_Play_clicked()
 {
-    is_playing_TAG=false; // указываем программе, что мы играем НЕ метку, а основной файл.
+    is_playing_TAG=false; // выходим из режима проигрывания метки, чтобы двигаться за её пределы.
     M_Player->play();
 }
 
