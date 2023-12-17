@@ -324,7 +324,6 @@ void MainWindow::on_pushButton_TAGSetEndTime_clicked()
 void MainWindow::on_pushButton_TagPlay_clicked()
 {
     is_playing_TAG=true;
-    M_Player->pause(); // это не обязательно, но логично))
     M_Player->setPosition(duration_tag_begin);
     M_Player->play();
 }

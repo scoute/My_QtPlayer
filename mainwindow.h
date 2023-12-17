@@ -41,8 +41,6 @@ private slots:
   void on_pushButton_TAGSetBeginTime_clicked();
   void on_pushButton_TAGSetEndTime_clicked();
 
-  void on_hSlider_TagTimeBegin_valueChanged(int value);
-
   void on_pushButton_TagPlay_clicked();
 
 private:
