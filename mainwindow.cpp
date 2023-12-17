@@ -166,10 +166,11 @@ void MainWindow::on_hSlider_AudioFileDuration_sliderReleased()
 
 void MainWindow::on_hSlider_TagTimeBegin_sliderMoved(int position)
 {
-    ui->label_TAGBeginTime->setText(MainWindow::timeToString(position));
-
     duration_tag_begin=position;
-    ui->label_TAG_Duration->setText(MainWindow::timeToString(duration_tag_end - position));
+
+    ui->label_TAGBeginTime->setText(MainWindow::timeToString(duration_tag_begin));
+
+    ui->label_TAG_Duration->setText(MainWindow::timeToString(duration_tag_end - duration_tag_begin));
 }
 
 
@@ -181,42 +182,56 @@ void MainWindow::on_hSlider_TagTimeBegin_valueChanged(int value)
 
 void MainWindow::on_hSlider_TagTimeBegin_sliderReleased()
 {
-
+    /*
+    qDebug() << "duration_tag_begin\t" << duration_tag_begin;
+    qDebug() << "duration_tag_end\t" << duration_tag_end;
+    qDebug() << "Mduration\t\t" << Mduration;
+    */
 }
 
 
 void MainWindow::on_hSlider_TagTimeEnd_sliderMoved(int position)
 {
-    ui->label_TAGEndTime->setText(MainWindow::timeToString(Mduration - position));
+    duration_tag_end = Mduration - position;
 
-    duration_tag_end=position;
-    ui->label_TAG_Duration->setText(MainWindow::timeToString(Mduration - position - duration_tag_begin));
+    ui->label_TAGEndTime->setText(MainWindow::timeToString(duration_tag_end));
+    //ui->label_TAGEndTime->setText(MainWindow::timeToString(duration_tag_end));
+
+    //ui->label_TAG_Duration->setText(MainWindow::timeToString(Mduration - position - duration_tag_begin));
+    ui->label_TAG_Duration->setText(MainWindow::timeToString(duration_tag_end - duration_tag_begin));
 }
 
 
 void MainWindow::on_hSlider_TagTimeEnd_sliderReleased()
 {
-
+    /*
+    qDebug() << "duration_tag_begin\t" << duration_tag_begin;
+    qDebug() << "duration_tag_end\t" << duration_tag_end;
+    qDebug() << "Mduration\t\t" << Mduration;
+    */
 }
 
 
-// при нажатии на кнопку (TAG)BEGIN, копируем время (а по сути текст) с label_CurrTime
+// при нажатии на кнопку (TAG)BEGIN, копируем текущее время мелодии (M_Player->position)
 // и положение ползунка с hSlider_AudioFileDuration.
 void MainWindow::on_pushButton_TAGSetBeginTime_clicked()
 {
-    ui->label_TAGBeginTime->setText(MainWindow::timeToString(M_Player->position()));
+    duration_tag_begin=M_Player->position();
+
+    ui->label_TAGBeginTime->setText(MainWindow::timeToString(duration_tag_begin));
     ui->hSlider_TagTimeBegin->setValue(ui->hSlider_AudioFileDuration->value());
 
-    duration_tag_begin=M_Player->position();
-    ui->label_TAG_Duration->setText(MainWindow::timeToString(duration_tag_end - M_Player->position()));
+    ui->label_TAG_Duration->setText(MainWindow::timeToString(duration_tag_end - duration_tag_begin));
 }
 
 
 void MainWindow::on_pushButton_TAGSetEndTime_clicked()
 {
-    ui->label_TAGEndTime->setText(MainWindow::timeToString(M_Player->position()));
+    //duration_tag_end=Mduration - M_Player->position();
+    duration_tag_end=M_Player->position();
+
+    ui->label_TAGEndTime->setText(MainWindow::timeToString(duration_tag_end));
     ui->hSlider_TagTimeEnd->setValue(Mduration - ui->hSlider_AudioFileDuration->value());
 
-    duration_tag_end=Mduration - M_Player->position();
-    ui->label_TAG_Duration->setText(MainWindow::timeToString(M_Player->position() - duration_tag_begin));
+    ui->label_TAG_Duration->setText(MainWindow::timeToString(duration_tag_end - duration_tag_begin));
 }
