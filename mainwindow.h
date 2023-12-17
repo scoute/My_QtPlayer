@@ -48,7 +48,8 @@ private:
   Ui::MainWindow *ui;
   QMediaPlayer *M_Player;
   qint64 Mduration;
-  //int movedposition;
   QString timeToString(qint64 duration);
+  qint64 duration_tag_begin;
+  qint64 duration_tag_end;
 };
 #endif // MAINWINDOW_H
