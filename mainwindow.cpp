@@ -31,9 +31,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     //ui->hSlider_TagTimeBegin->setStyleSheet("QSlider::groove:horizontal {background-color:red;}");
     //ui->hSlider_TagTimeBegin->setStyleSheet("QSlider::groove:horizontal { border: 1px solid #999999; height: 8px; background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #B1B1B1, stop:1 #c4c4c4);  margin: 2px 0; }");
-
-    //ui->hSlider_TagTimeBegin->setMaximumWidth(100);
-    //ui->hSlider_TagTimeBegin->setMinimumWidth(200);
 }
 
 
@@ -43,30 +40,23 @@ MainWindow::~MainWindow()
 }
 
 
+// эта функция переводит время текущей позиции мелодии из qint64 в текст,
+// для того чтобы показывать на всяких label в формате 00:00:00.000
 QString MainWindow::timeToString(qint64 duration){
-    //QString timestr;
-    if (duration)
+    if (duration||Mduration)
     {
-        /*
-        QTime CurrentTime((duration / 3600) % 60, (duration / 60) % 60, duration % 60, duration * 1000 % 1000);
-        QTime totalTime((Mduration / 3600) % 60, (Mduration / 60) % 60, Mduration % 60, Mduration * 1000 % 1000);
-        */
+        QTime   durTime((duration / 3600 / 1000) % 60, (duration / 60 / 1000) % 60, (duration / 1000) % 60, duration % 1000);
+        QString format = "mm:ss.zzz"; // zzz - значит миллисекунды
 
-        QTime CurrentTime((duration / 3600 / 1000) % 60, (duration / 60 / 1000) % 60, (duration / 1000) % 60, duration % 1000);
-        //QTime totalTime((Mduration / 3600 / 1000) % 60, (Mduration / 60 / 1000) % 60, (Mduration / 1000) % 60, Mduration % 1000);
-
-        //QString format = "mm:ss";
-        QString format = "mm:ss.zzz";
-
-        // если длительность аудио больше часа, ставим "hh:mm:ss" вместо "mm:ss"
-        if (Mduration > 3600)
+        // если длительность аудио больше часа, ставим "hh:mm:ss.zzz" вместо "mm:ss.zzz"
+        if ((duration / 1000) > 3600) // делим на 1000 потому что это миллисекунды
         {
-            //format = "hh:mm:ss";
             format = "hh:mm:ss.zzz";
         }
-
-        return CurrentTime.toString(format);
+        return durTime.toString(format);
     }
+
+    return "error";
 }
 
 
@@ -75,28 +65,9 @@ void MainWindow::updateduration(qint64 duration)
     //QString timestr;
     if (duration || Mduration)
     {
-        /*
-        QTime CurrentTime((duration / 3600) % 60, (duration / 60) % 60, duration % 60, duration * 1000 % 1000);
-        QTime totalTime((Mduration / 3600) % 60, (Mduration / 60) % 60, Mduration % 60, Mduration * 1000 % 1000);
-        */
-
-
-        QTime CurrentTime((duration / 3600 / 1000) % 60, (duration / 60 / 1000) % 60, (duration / 1000) % 60, duration % 1000);
-        QTime totalTime((Mduration / 3600 / 1000) % 60, (Mduration / 60 / 1000) % 60, (Mduration / 1000) % 60, Mduration % 1000);
-
-
-        //QString format = "mm:ss";
-        QString format = "mm:ss.zzz";
-
-        // если длительность аудио больше часа, ставим "hh:mm:ss" вместо "mm:ss"
-        if (Mduration > 3600)
-        {
-            //format = "hh:mm:ss";
-            format = "hh:mm:ss.zzz";
-        }
-
-        ui->label_CurrTime->setText(CurrentTime.toString(format)); // + " / " + totalTime.toString(format));
-        ui->label_Total_Time->setText(totalTime.toString(format));
+        // новый способ конвертации int->text
+        ui->label_CurrTime->setText(MainWindow::timeToString(duration)); // + " / " + totalTime.toString(format));
+        ui->label_Total_Time->setText(MainWindow::timeToString(Mduration));
     }
 }
 
@@ -109,8 +80,14 @@ void MainWindow::durationChanged(qint64 duration)
     ui->hSlider_TagTimeBegin->setMaximum(Mduration);
     ui->hSlider_TagTimeEnd->setMaximum(Mduration);
 
-    qDebug() << "ui->hSlider_AudioFileDuration->maximumWidth" <<
-                ui->hSlider_AudioFileDuration->maximumWidth();
+    duration_tag_begin=0;
+    ui->label_TAGBeginTime->setText(MainWindow::timeToString(0));
+
+    duration_tag_end=Mduration;
+    ui->label_TAGEndTime->setText(MainWindow::timeToString(Mduration));
+
+    // в первый раз нет смысла вычислять, разница равна максимальной длительности мелодии.
+    ui->label_TAG_Duration->setText(ui->label_TAGEndTime->text());
 }
 
 
@@ -148,6 +125,14 @@ void MainWindow::on_pushButton_Play_clicked()
 
 void MainWindow::on_pushButton_Pause_clicked()
 {
+    /*
+    qDebug() << "M_Player->PausedState" << M_Player->PausedState;
+    if (M_Player->PausedState) {
+        M_Player->pause();
+    } else {
+        M_Player->play();
+    }
+    */
     M_Player->pause();
 }
 
@@ -159,86 +144,85 @@ void MainWindow::on_hSlider_VolumeControl_valueChanged(int value)
 
 
 void MainWindow::on_hSlider_AudioFileDuration_sliderMoved(int position)
-{ 
-    QTime CurrentTime((position / 3600 / 1000) % 60, (position / 60 / 1000) % 60, (position / 1000) % 60, position % 1000);
-
-    //QString format = "mm:ss";
-    QString format = "mm:ss.zzz";
-
-    // если длительность аудио больше часа, ставим "hh:mm:ss" вместо "mm:ss"
-    if (Mduration > 3600)
-    {
-        //format = "hh:mm:ss";
-        format = "hh:mm:ss.zzz";
-    }
-
-    //ui->label_CurrTime->setText(CurrentTime.toString(format));
+{
     ui->label_CurrTime->setText(MainWindow::timeToString(position));
 }
 
 
 void MainWindow::on_hSlider_AudioFileDuration_sliderReleased()
 {
-    //M_Player->setPosition(ui->hSlider_AudioFileDuration->value()*1000);
     M_Player->setPosition(ui->hSlider_AudioFileDuration->value());
-
-    //ui->hSlider_TagTimeBegin->setMaximumWidth(movedposition * 10);
-    //ui->hSlider_TagTimeBegin->setMinimumWidth(movedposition * 10);
 }
 
 
 void MainWindow::on_hSlider_TagTimeBegin_sliderMoved(int position)
 {
+    duration_tag_begin=position;
 
+    ui->label_TAGBeginTime->setText(MainWindow::timeToString(duration_tag_begin));
+
+    ui->label_TAG_Duration->setText(MainWindow::timeToString(duration_tag_end - duration_tag_begin));
 }
 
 
 void MainWindow::on_hSlider_TagTimeBegin_valueChanged(int value)
 {
-    //QTime CurrentTime((duration / 3600) % 60, (duration / 60) % 60, duration % 60, duration * 1000 % 1000);
-    //QTime totalTime((Mduration / 3600) % 60, (Mduration / 60) % 60, Mduration % 60, Mduration * 1000 % 1000);
-    //QString format = "mm:ss";
-    //ui->label_TAGBeginTime->setText(CurrentTime.toString(format));
-    //ui->label_TAGBeginTime->setText(QString::number( value ).toString("mm:ss"));
+
 }
 
 
 void MainWindow::on_hSlider_TagTimeBegin_sliderReleased()
 {
-
+    /*
+    qDebug() << "duration_tag_begin\t" << duration_tag_begin;
+    qDebug() << "duration_tag_end\t" << duration_tag_end;
+    qDebug() << "Mduration\t\t" << Mduration;
+    */
 }
 
 
 void MainWindow::on_hSlider_TagTimeEnd_sliderMoved(int position)
 {
+    duration_tag_end = Mduration - position;
 
+    ui->label_TAGEndTime->setText(MainWindow::timeToString(duration_tag_end));
+    //ui->label_TAGEndTime->setText(MainWindow::timeToString(duration_tag_end));
+
+    //ui->label_TAG_Duration->setText(MainWindow::timeToString(Mduration - position - duration_tag_begin));
+    ui->label_TAG_Duration->setText(MainWindow::timeToString(duration_tag_end - duration_tag_begin));
 }
 
 
 void MainWindow::on_hSlider_TagTimeEnd_sliderReleased()
 {
-
+    /*
+    qDebug() << "duration_tag_begin\t" << duration_tag_begin;
+    qDebug() << "duration_tag_end\t" << duration_tag_end;
+    qDebug() << "Mduration\t\t" << Mduration;
+    */
 }
 
 
-// при нажатии на кнопку (TAG)BEGIN, копируем время (а по сути текст) с label_CurrTime
+// при нажатии на кнопку (TAG)BEGIN, копируем текущее время мелодии (M_Player->position)
 // и положение ползунка с hSlider_AudioFileDuration.
 void MainWindow::on_pushButton_TAGSetBeginTime_clicked()
 {
-    ui->label_TAGBeginTime->setText(ui->label_CurrTime->text());
-    //ui->label_TAGBeginTime->setText(M_Player->position());
+    duration_tag_begin=M_Player->position();
 
+    ui->label_TAGBeginTime->setText(MainWindow::timeToString(duration_tag_begin));
     ui->hSlider_TagTimeBegin->setValue(ui->hSlider_AudioFileDuration->value());
+
+    ui->label_TAG_Duration->setText(MainWindow::timeToString(duration_tag_end - duration_tag_begin));
 }
 
 
 void MainWindow::on_pushButton_TAGSetEndTime_clicked()
 {
-    ui->label_TAGEndTime->setText(ui->label_CurrTime->text());
+    //duration_tag_end=Mduration - M_Player->position();
+    duration_tag_end=M_Player->position();
+
+    ui->label_TAGEndTime->setText(MainWindow::timeToString(duration_tag_end));
     ui->hSlider_TagTimeEnd->setValue(Mduration - ui->hSlider_AudioFileDuration->value());
+
+    ui->label_TAG_Duration->setText(MainWindow::timeToString(duration_tag_end - duration_tag_begin));
 }
-
-
-
-
-
