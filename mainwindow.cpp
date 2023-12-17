@@ -321,10 +321,14 @@ void MainWindow::on_pushButton_TAGSetEndTime_clicked()
 }
 
 
+// если нажимаем на кнопку TagPlay, то переходим в режим проигрывания метки (is_playing_TAG=true)
+// и перемещаем позицию основного проигрывателя на начало метки.
+//
+// Это создаёт впечатление, что проигрывается метка, но визуально это происходит
+// в рамках основного проигрывателя.
 void MainWindow::on_pushButton_TagPlay_clicked()
 {
     is_playing_TAG=true;
     M_Player->setPosition(duration_tag_begin);
     M_Player->play();
 }
-
