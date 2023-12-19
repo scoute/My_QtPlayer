@@ -21,6 +21,22 @@
     Надо сказать, что 2 ползунка для audio-TAG сделаны от безысходности )) потому что
     реализация ползунка(слайдера) с двумя маркерами - слишком сложная задача для новичка,
     пришлось как-то выкручиваться.
+
+
+
+    TODO! (начинать с лёгкого, чтобы не выгореть :D )
+    * адаптивная верстка.
+    * древовидный плейлист из папки с mp3.
+    * отдельное окно со списком меток.
+    * сохранения аудио-меток в БД sqlite3.
+    *
+    *
+    * сканирование всех mp3 в папке и присвоение им md5sum в БД для исключения дублей.
+    * возможность делиться аудио-метками (экспорт/импорт)
+    * при импорте чужих меток, применение их для локальных mp3 при совпадении md5sum.
+    *
+    *
+    * генерация mp3-файла из временной метки с возможностью сохранения (если это не очень сложно).
 */
 
 
@@ -44,10 +60,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(M_Player,&QMediaPlayer::durationChanged,this,&MainWindow::durationChanged);
     connect(M_Player,&QMediaPlayer::positionChanged,this,&MainWindow::positionChanged);
 
-    /*
-    ui->hSlider_AudioFileDuration->setRange(0,M_Player->duration() / 1000);
-    ui->hSlider_TagTimeBegin->setRange(0,M_Player->duration() / 1000);
-    */
     ui->hSlider_AudioFileDuration->setRange(0,M_Player->duration());
     ui->hSlider_TagTimeBegin->setRange(0,M_Player->duration());
 
