@@ -31,10 +31,24 @@
            <x>0</x>
            <y>0</y>
            <width>504</width>
-           <height>186</height>
+           <height>184</height>
           </rect>
          </property>
         </widget>
+       </widget>
+      </item>
+      <item row="1" column="0" rowspan="5">
+       <widget class="Line" name="line">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3" rowspan="5">
+       <widget class="Line" name="line_4">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
        </widget>
       </item>
       <item row="5" column="2">
@@ -247,6 +261,23 @@
         </item>
        </layout>
       </item>
+      <item row="1" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout_7">
+        <item>
+         <widget class="QLineEdit" name="lineEdit_globalSearch"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton_globalSearch">
+          <property name="text">
+           <string>Search</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="5" column="1">
+       <widget class="QTreeView" name="treeView_TagPlaylists"/>
+      </item>
       <item row="2" column="2">
        <layout class="QVBoxLayout" name="verticalLayout_8">
         <item>
@@ -367,32 +398,12 @@
         </item>
        </layout>
       </item>
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="lineEdit_globalSearch"/>
-      </item>
       <item row="0" column="1" colspan="2">
        <widget class="Line" name="line_3">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
        </widget>
-      </item>
-      <item row="1" column="0" rowspan="5">
-       <widget class="Line" name="line">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3" rowspan="5">
-       <widget class="Line" name="line_4">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1">
-       <widget class="QTreeView" name="treeView_TagPlaylists"/>
       </item>
      </layout>
     </item>
