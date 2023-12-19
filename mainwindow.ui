@@ -21,7 +21,7 @@
     <item row="1" column="0">
      <layout class="QGridLayout" name="gridLayout_4">
       <item row="4" column="1">
-       <widget class="QScrollArea" name="scrollArea_2">
+       <widget class="QScrollArea" name="scrollArea_TagList">
         <property name="widgetResizable">
          <bool>true</bool>
         </property>
@@ -61,17 +61,8 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="1">
-       <widget class="QTreeWidget" name="treeWidget_2">
-        <column>
-         <property name="text">
-          <string notr="true">1</string>
-         </property>
-        </column>
-       </widget>
-      </item>
       <item row="2" column="1">
-       <widget class="QTreeWidget" name="treeWidget">
+       <widget class="QTreeWidget" name="treeWidget_DirTree">
         <column>
          <property name="text">
           <string notr="true">1</string>
@@ -206,7 +197,7 @@
           <item row="0" column="1">
            <layout class="QGridLayout" name="gridLayout_2">
             <item row="0" column="1" colspan="2">
-             <widget class="QLabel" name="label_SetCurrTime">
+             <widget class="QLabel" name="label_SetCurrTimeAs">
               <property name="text">
                <string>set   current   time   as:</string>
               </property>
@@ -246,7 +237,7 @@
            </layout>
           </item>
           <item row="0" column="3">
-           <widget class="QLineEdit" name="lineEdit">
+           <widget class="QLineEdit" name="lineEdit_TagSaveName">
             <property name="text">
              <string>Tag name to save</string>
             </property>
@@ -377,7 +368,7 @@
        </layout>
       </item>
       <item row="1" column="1">
-       <widget class="QLineEdit" name="lineEdit_2"/>
+       <widget class="QLineEdit" name="lineEdit_globalSearch"/>
       </item>
       <item row="0" column="1" colspan="2">
        <widget class="Line" name="line_3">
@@ -399,6 +390,9 @@
          <enum>Qt::Vertical</enum>
         </property>
        </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QTreeView" name="treeView_TagPlaylists"/>
       </item>
      </layout>
     </item>
