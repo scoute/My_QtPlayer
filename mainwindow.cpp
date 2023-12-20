@@ -93,11 +93,12 @@ MainWindow::MainWindow(QWidget *parent)
     //dirModel->setRootPath("./"); //Set model path
     dirModel->setRootPath(QDir::currentPath());
     //dirModel->setFilter(QDir::Files); //Only show files
+    //dirModel->setFilter("*.mp3"); //Only show files
 
     ui->treeView_DirTree->setModel(dirModel); //Add model to QTreeView
 
     //QModelIndex idx = dirModel->index("./uploaded"); //Set the root item
-    QModelIndex idx = dirModel->index("./"); //Set the root item
+    QModelIndex idx = dirModel->index("../"); //Set the root item
     ui->treeView_DirTree->setRootIndex(idx);
 }
 
@@ -393,19 +394,23 @@ void MainWindow::on_treeView_DirTree_clicked(const QModelIndex &index)
 }
 
 
+// обработка двойного клика на каком-то файле в дереве папок
 void MainWindow::on_treeView_DirTree_doubleClicked(const QModelIndex &index)
 {
+    // создаём временную модель и вытягиваем из неё полный путь к кликнутому файлу.
     QFileSystemModel *dirModel_tmp = new QFileSystemModel();
     QString full_path_mp3 = dirModel_tmp->filePath(index);
 
     qDebug() << "path=" << full_path_mp3;
 
+    // загружаем новый аудио-файл в проигрыватель.
     M_Player->setMedia(QUrl("file://" + full_path_mp3));
 
+    // загружаем имя кликнутого файла в лейблу "File Name"
     QFileInfo File(index.data(Qt::DisplayRole).toString());
     ui->lbl_Value_File_Name->setText(File.fileName());
 
-    //M_Player->play();
+    // запускаем проигрыватель через функцию.
     MainWindow::on_pushButton_Play_clicked();
 }
 
