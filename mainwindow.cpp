@@ -2,6 +2,27 @@
 #include "ui_mainwindow.h"
 #include <QDebug>
 
+// для отображения дерева папок
+#include <QFile>
+#include <QSaveFile>
+#include <QFileDialog>
+#include <QFileSystemModel>
+#include <QTextStream>
+#include <QMessageBox>
+
+#if defined(QT_PRINTSUPPORT_LIB)
+#include <QtPrintSupport/qtprintsupportglobal.h>
+#if QT_CONFIG(printer)
+#if QT_CONFIG(printdialog)
+#include <QPrintDialog>
+#endif // QT_CONFIG(printdialog)
+#include <QPrinter>
+#endif // QT_CONFIG(printer)
+#endif // QT_PRINTSUPPORT_LIB
+#include <QFont>
+#include <QFontDialog>
+
+
 
 /*
     ПОЛНОЕ ОПИСАНИЕ ПРОГРАММЫ.
@@ -65,6 +86,19 @@ MainWindow::MainWindow(QWidget *parent)
 
     //ui->hSlider_TagTimeBegin->setStyleSheet("QSlider::groove:horizontal {background-color:red;}");
     //ui->hSlider_TagTimeBegin->setStyleSheet("QSlider::groove:horizontal { border: 1px solid #999999; height: 8px; background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #B1B1B1, stop:1 #c4c4c4);  margin: 2px 0; }");
+
+
+    // это окно с деревом папок (слева вверху)
+    QFileSystemModel *dirModel = new QFileSystemModel(); //Create new model
+    //dirModel->setRootPath("./"); //Set model path
+    dirModel->setRootPath(QDir::currentPath());
+    //dirModel->setFilter(QDir::Files); //Only show files
+
+    ui->treeView_DirTree->setModel(dirModel); //Add model to QTreeView
+
+    //QModelIndex idx = dirModel->index("./uploaded"); //Set the root item
+    QModelIndex idx = dirModel->index("./"); //Set the root item
+    ui->treeView_DirTree->setRootIndex(idx);
 }
 
 
@@ -157,6 +191,8 @@ void MainWindow::on_actionOpen_File_triggered()
 {
     QString FileName = QFileDialog::getOpenFileName(this,tr("Select Audio File"),
                                                          tr("MP3 Files (*.MP3)"));
+
+    qDebug() << "Open FileName" << FileName;
     M_Player->setMedia(QUrl("file://" + FileName));
 
     QFileInfo File(FileName);
@@ -344,3 +380,32 @@ void MainWindow::on_pushButton_TagPlay_clicked()
     M_Player->setPosition(duration_tag_begin);
     M_Player->play();
 }
+
+void MainWindow::on_actionExit_triggered()
+{
+    QCoreApplication::quit();
+}
+
+
+void MainWindow::on_treeView_DirTree_clicked(const QModelIndex &index)
+{
+    //qDebug() << "вы кликнули по файлу в дереве с именем: " << " =[+ " << index.data(Qt::DisplayRole).toString() << "+]=";
+}
+
+
+void MainWindow::on_treeView_DirTree_doubleClicked(const QModelIndex &index)
+{
+    QFileSystemModel *dirModel_tmp = new QFileSystemModel();
+    QString full_path_mp3 = dirModel_tmp->filePath(index);
+
+    qDebug() << "path=" << full_path_mp3;
+
+    M_Player->setMedia(QUrl("file://" + full_path_mp3));
+
+    QFileInfo File(index.data(Qt::DisplayRole).toString());
+    ui->lbl_Value_File_Name->setText(File.fileName());
+
+    //M_Player->play();
+    MainWindow::on_pushButton_Play_clicked();
+}
+

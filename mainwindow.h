@@ -43,6 +43,12 @@ private slots:
 
   void on_pushButton_TagPlay_clicked();
 
+  void on_actionExit_triggered();
+
+  void on_treeView_DirTree_clicked(const QModelIndex &index);
+
+  void on_treeView_DirTree_doubleClicked(const QModelIndex &index);
+
 private:
   void updateduration(qint64 duration);
   Ui::MainWindow *ui;
