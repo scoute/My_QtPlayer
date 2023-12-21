@@ -1,27 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QDebug>
-
-// для отображения дерева папок
-#include <QFile>
-#include <QSaveFile>
-#include <QFileDialog>
-#include <QFileSystemModel>
-#include <QTextStream>
-#include <QMessageBox>
-
-#if defined(QT_PRINTSUPPORT_LIB)
-#include <QtPrintSupport/qtprintsupportglobal.h>
-#if QT_CONFIG(printer)
-#if QT_CONFIG(printdialog)
-#include <QPrintDialog>
-#endif // QT_CONFIG(printdialog)
-#include <QPrinter>
-#endif // QT_CONFIG(printer)
-#endif // QT_PRINTSUPPORT_LIB
-#include <QFont>
-#include <QFontDialog>
-
 
 
 /*
@@ -67,6 +45,39 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+
+    // *********** РАЗДЕЛ С БД **************
+
+    db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName("./sqlite.db");
+    if (db.open()){ qDebug("DB Open"); } else { qDebug("DB not Open"); }  // проверка БД
+
+    query = new QSqlQuery(db);
+    query->exec("CREATE TABLE AudioFiles(ID int, FILE_PATH TEXT, FILE_MD5 TEXT, TAG_NAME TEXT, TAG_START TEXT, TAG_FINISH TEXT, TAG_DUR TEXT);");
+
+    //qDebug() << "In Table: " << query->exec("SELECT * FROM AudioFiles;");
+
+
+    //    Таблица AudioFiles:
+    //    * ID (int) (с уникальным ключом)
+    //    * FILE_PATH (text)
+    //    * FILE_MD5 (text) хеш-сумма этого файла
+    //    * TAG_NAME (text) имя тэга
+    //    * TAG_START (text)
+    //    * TAG_FINISH (text)
+    //    * TAG_DUR (text)
+
+
+    model = new QSqlTableModel(this, db);
+    model->setTable("AudioFiles");
+    model->select();
+
+    ui->tableView_Sqlite->setModel(model);
+
+
+
+    // раздел с Плеером
     M_Player = new QMediaPlayer();
     ui->pushButton_Play->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
     ui->pushButton_Pause->setIcon(style()->standardIcon(QStyle::SP_MediaPause));
@@ -100,6 +111,7 @@ MainWindow::MainWindow(QWidget *parent)
     //QModelIndex idx = dirModel->index("./uploaded"); //Set the root item
     QModelIndex idx = dirModel->index("../"); //Set the root item
     ui->treeView_DirTree->setRootIndex(idx);
+
 }
 
 
@@ -412,5 +424,50 @@ void MainWindow::on_treeView_DirTree_doubleClicked(const QModelIndex &index)
 
     // запускаем проигрыватель через функцию.
     MainWindow::on_pushButton_Play_clicked();
+}
+
+
+void MainWindow::on_pushButton_TAGSave_clicked()
+{
+    model->insertRow(model->rowCount());
+
+    query->prepare("INSERT INTO AudioFiles(ID, FILE_PATH, FILE_MD5, TAG_NAME, TAG_START, TAG_FINISH, TAG_DUR)"
+                   "VALUES (:ID_Value, :FPATH_Value, :FSUM_Value, :TAGNAME_Value, :TAGSTART_Value, :TAGFINISH_Value, :TAGDUR_Value)");
+    query->bindValue(":ID_Value",        model->rowCount());
+    query->bindValue(":FPATH_Value",     ui->lbl_Value_File_Name->text());
+    query->bindValue(":FSUM_Value",      "123eef");
+    query->bindValue(":TAGNAME_Value",   ui->lineEdit_TagSaveName->text());
+    query->bindValue(":TAGSTART_Value",  ui->label_TAGBeginTime->text());
+    query->bindValue(":TAGFINISH_Value", ui->label_TAGEndTime->text());
+    query->bindValue(":TAGDUR_Value",    ui->label_TAG_Duration->text());
+
+    query->exec();
+    model->submitAll();
+    model->select();
+
+    // ui->tableView_Sqlite->update();
+
+    //    Таблица AudioFiles:
+    //    * ID (int) (с уникальным ключом)
+    //    * FILE_PATH (text)
+    //    * FILE_MD5 (text) хеш-сумма этого файла
+    //    * TAG_NAME (text) имя тэга
+    //    * TAG_START (text)
+    //    * TAG_FINISH (text)
+    //    * TAG_DUR (text)
+
+}
+
+
+void MainWindow::on_PushButton_TAGDel_clicked()
+{
+    model->removeRow(row);
+    model->select();
+}
+
+
+void MainWindow::on_tableView_Sqlite_clicked(const QModelIndex &index)
+{
+    row = index.row();
 }
 

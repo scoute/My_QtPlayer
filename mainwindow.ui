@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>TagPlayer</string>
   </property>
   <property name="layoutDirection">
    <enum>Qt::LeftToRight</enum>
@@ -30,12 +30,15 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>504</width>
+           <width>500</width>
            <height>186</height>
           </rect>
          </property>
         </widget>
        </widget>
+      </item>
+      <item row="5" column="3">
+       <widget class="QTableView" name="tableView_Sqlite"/>
       </item>
       <item row="1" column="0" rowspan="5">
        <widget class="Line" name="line">
@@ -44,38 +47,138 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="3" rowspan="5">
+      <item row="1" column="4" rowspan="5">
        <widget class="Line" name="line_4">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
        </widget>
       </item>
-      <item row="5" column="2">
-       <widget class="QScrollArea" name="scrollArea">
-        <property name="widgetResizable">
-         <bool>true</bool>
-        </property>
-        <widget class="QWidget" name="scrollAreaWidgetContents_3">
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>0</y>
-           <width>504</width>
-           <height>189</height>
-          </rect>
-         </property>
-        </widget>
-       </widget>
+      <item row="2" column="3">
+       <layout class="QVBoxLayout" name="verticalLayout_8">
+        <item>
+         <spacer name="verticalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_6">
+          <item>
+           <widget class="QPushButton" name="pushButton_Play">
+            <property name="text">
+             <string>Play</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_Pause">
+            <property name="text">
+             <string>Pause</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSlider" name="hSlider_VolumeControl">
+            <property name="layoutDirection">
+             <enum>Qt::LeftToRight</enum>
+            </property>
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>100</number>
+            </property>
+            <property name="sliderPosition">
+             <number>10</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_5">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QSlider" name="hSlider_AudioFileDuration">
+          <property name="singleStep">
+           <number>1</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="invertedControls">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QLabel" name="label_CurrTime">
+            <property name="text">
+             <string>00:00</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>268</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_Total_Time">
+            <property name="text">
+             <string>00:00</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
       </item>
-      <item row="6" column="1" colspan="2">
+      <item row="6" column="1" colspan="3">
        <widget class="Line" name="line_2">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
-      <item row="3" column="2" rowspan="2">
+      <item row="2" column="1">
+       <widget class="QTreeView" name="treeView_DirTree"/>
+      </item>
+      <item row="3" column="3" rowspan="2">
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
          <widget class="Line" name="line_5">
@@ -218,17 +321,17 @@
               </property>
              </widget>
             </item>
-            <item row="1" column="2">
-             <widget class="QPushButton" name="pushButton_TAGSetEndTime">
+            <item row="0" column="0">
+             <widget class="QPushButton" name="pushButton_TagPlay">
               <property name="text">
-               <string>END</string>
+               <string>Play Tag</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="1">
-             <widget class="QPushButton" name="pushButton_TAGSetBeginTime">
+            <item row="1" column="2">
+             <widget class="QPushButton" name="pushButton_TAGSetEndTime">
               <property name="text">
-               <string>BEGIN</string>
+               <string>End</string>
               </property>
              </widget>
             </item>
@@ -239,21 +342,34 @@
               </property>
              </widget>
             </item>
-            <item row="0" column="0">
-             <widget class="QPushButton" name="pushButton_TagPlay">
+            <item row="1" column="3">
+             <widget class="QLineEdit" name="lineEdit_TagSaveName">
               <property name="text">
-               <string>Play Tag</string>
+               <string>Tag name to save</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QPushButton" name="pushButton_TAGSetBeginTime">
+              <property name="text">
+               <string>Begin</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="4">
+             <widget class="QPushButton" name="PushButton_TAGDel">
+              <property name="maximumSize">
+               <size>
+                <width>80</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Delete TAG</string>
               </property>
              </widget>
             </item>
            </layout>
-          </item>
-          <item row="0" column="3">
-           <widget class="QLineEdit" name="lineEdit_TagSaveName">
-            <property name="text">
-             <string>Tag name to save</string>
-            </property>
-           </widget>
           </item>
          </layout>
         </item>
@@ -266,6 +382,12 @@
         </item>
         <item>
          <widget class="QPushButton" name="pushButton_globalSearch">
+          <property name="maximumSize">
+           <size>
+            <width>60</width>
+            <height>24</height>
+           </size>
+          </property>
           <property name="text">
            <string>Search</string>
           </property>
@@ -276,135 +398,57 @@
       <item row="5" column="1">
        <widget class="QTreeView" name="treeView_TagPlaylists"/>
       </item>
-      <item row="2" column="2">
-       <layout class="QVBoxLayout" name="verticalLayout_8">
+      <item row="1" column="3">
+       <layout class="QHBoxLayout" name="horizontalLayout_8">
         <item>
-         <layout class="QFormLayout" name="formLayout">
-          <item row="0" column="0">
-           <widget class="QLabel" name="lbl_Title_File_Name">
-            <property name="font">
-             <font>
-              <pointsize>12</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>AudioFile: </string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLabel" name="lbl_Value_File_Name">
-            <property name="font">
-             <font>
-              <pointsize>12</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>FILE_NAME</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_6">
-          <item>
-           <widget class="QPushButton" name="pushButton_Pause">
-            <property name="text">
-             <string>Pause</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pushButton_Play">
-            <property name="text">
-             <string>Play</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSlider" name="hSlider_VolumeControl">
-            <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
-            </property>
-            <property name="minimum">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <number>100</number>
-            </property>
-            <property name="sliderPosition">
-             <number>10</number>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="QSlider" name="hSlider_AudioFileDuration">
-          <property name="singleStep">
-           <number>1</number>
+         <widget class="QLabel" name="lbl_Title_File_Name">
+          <property name="maximumSize">
+           <size>
+            <width>80</width>
+            <height>24</height>
+           </size>
           </property>
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
           </property>
-          <property name="invertedControls">
-           <bool>false</bool>
+          <property name="text">
+           <string>AudioFile: </string>
           </property>
          </widget>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout">
-          <item>
-           <widget class="QLabel" name="label_CurrTime">
-            <property name="text">
-             <string>00:00</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>268</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_Total_Time">
-            <property name="text">
-             <string>00:00</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         <widget class="QLabel" name="lbl_Value_File_Name">
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>FILE_NAME</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
-      <item row="0" column="1" colspan="2">
+      <item row="0" column="1" colspan="3">
        <widget class="Line" name="line_3">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QTreeView" name="treeView_DirTree"/>
+      <item row="1" column="2" rowspan="5">
+       <widget class="Line" name="line_7">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>

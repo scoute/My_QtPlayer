@@ -2,10 +2,40 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QDebug>
 
 #include <QtMultimedia>
 #include <QFileDialog>
 #include <QStyle>
+
+// для БД
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlTableModel>
+
+// для отображения дерева папок
+#include <QFile>
+#include <QSaveFile>
+#include <QFileDialog>
+#include <QFileSystemModel>
+
+
+//#include <QTextStream>
+//#include <QMessageBox>
+
+//#if defined(QT_PRINTSUPPORT_LIB)
+//#include <QtPrintSupport/qtprintsupportglobal.h>
+//#if QT_CONFIG(printer)
+//#if QT_CONFIG(printdialog)
+//#include <QPrintDialog>
+//#endif // QT_CONFIG(printdialog)
+//#include <QPrinter>
+//#endif // QT_CONFIG(printer)
+//#endif // QT_PRINTSUPPORT_LIB
+
+//#include <QFont>
+//#include <QFontDialog>
+
 
 
 QT_BEGIN_NAMESPACE
@@ -49,6 +79,12 @@ private slots:
 
   void on_treeView_DirTree_doubleClicked(const QModelIndex &index);
 
+  void on_pushButton_TAGSave_clicked();
+
+  void on_PushButton_TAGDel_clicked();
+
+  void on_tableView_Sqlite_clicked(const QModelIndex &index);
+
 private:
   void updateduration(qint64 duration);
   Ui::MainWindow *ui;
@@ -58,5 +94,12 @@ private:
   qint64 duration_tag_begin;
   qint64 duration_tag_end;
   bool is_playing_TAG;
+
+  QSqlDatabase db;
+  QSqlQuery *query;
+  QSqlTableModel *model;
+
+  int row; // выделенная строка в SQL редакторе Тегов
+
 };
 #endif // MAINWINDOW_H
