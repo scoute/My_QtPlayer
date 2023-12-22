@@ -54,7 +54,7 @@ MainWindow::MainWindow(QWidget *parent)
     if (db.open()){ qDebug("DB Open"); } else { qDebug("DB not Open"); }  // проверка БД
 
     query = new QSqlQuery(db);
-    query->exec("CREATE TABLE AudioFiles(ID int, FILE_PATH TEXT, FILE_MD5 TEXT, TAG_NAME TEXT, TAG_START TEXT, TAG_FINISH TEXT, TAG_DUR TEXT);");
+    query->exec("CREATE TABLE AudioFiles(ID int PRIMARY KEY, FILE_PATH TEXT, FILE_MD5 TEXT, TAG_NAME TEXT, TAG_START TEXT, TAG_FINISH TEXT, TAG_DUR TEXT);");
 
     //qDebug() << "In Table: " << query->exec("SELECT * FROM AudioFiles;");
 
@@ -427,6 +427,7 @@ void MainWindow::on_treeView_DirTree_doubleClicked(const QModelIndex &index)
 }
 
 
+// кнопка сохранения TAG в БД SQlite
 void MainWindow::on_pushButton_TAGSave_clicked()
 {
     model->insertRow(model->rowCount());
@@ -445,7 +446,17 @@ void MainWindow::on_pushButton_TAGSave_clicked()
     model->submitAll();
     model->select();
 
-    // ui->tableView_Sqlite->update();
+
+//    QString query_ = QString("ALTER TABLE %1 ADD COLUMN %2 %3").arg(m_table).arg(m_name).arg(m_type);
+//    QSqlQuery query("", *m_db);
+//    bool status = query.exec(query_);
+
+//    if (!status) {
+//        QString err = query.lastError().text();
+//        //emit errorOccured(err);
+//    }
+
+
 
     //    Таблица AudioFiles:
     //    * ID (int) (с уникальным ключом)
@@ -469,5 +480,9 @@ void MainWindow::on_PushButton_TAGDel_clicked()
 void MainWindow::on_tableView_Sqlite_clicked(const QModelIndex &index)
 {
     row = index.row();
+
+    qDebug() << "в таблице SQLite вы нажали на: " << index.data(Qt::DisplayRole).toString();
+
+    // TODO!! LOAD TAG from DB
 }
 
