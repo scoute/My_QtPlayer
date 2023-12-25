@@ -13,11 +13,17 @@
 #include <QSqlQuery>
 #include <QSqlTableModel>
 
+#include <QSqlRelationalDelegate>
+
+
 // для отображения дерева папок
 #include <QFile>
 #include <QSaveFile>
 #include <QFileDialog>
 #include <QFileSystemModel>
+
+
+#include <QDataWidgetMapper>
 
 
 //#include <QTextStream>
@@ -98,8 +104,11 @@ private:
   QSqlDatabase db;
   QSqlQuery *query;
   QSqlTableModel *model;
+  //QSqlQueryModel *model;
 
   int row; // выделенная строка в SQL редакторе Тегов
+
+  QDataWidgetMapper *mapper = new QDataWidgetMapper(this);
 
 };
 #endif // MAINWINDOW_H

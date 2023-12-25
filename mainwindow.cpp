@@ -72,8 +72,28 @@ MainWindow::MainWindow(QWidget *parent)
     model = new QSqlTableModel(this, db);
     model->setTable("AudioFiles");
     model->select();
-
     ui->tableView_Sqlite->setModel(model);
+
+
+    //    model = new QSqlQueryModel(this);
+    //    model->setQuery(QString("SELECT * FROM AudioFiles"), db);
+
+    //    QSortFilterProxyModel *proxyModel;
+    //    proxyModel = new QSortFilterProxyModel(this);
+    //    proxyModel->setSourceModel(model);
+    //    ui->tableView_Sqlite->setModel(proxyModel);
+
+
+
+
+    //    model = new QSqlQueryModel(this);
+    //    model->setQuery(QString("SELECT * FROM tablexyz), db);
+    //    proxyModel = new QSortFilterProxyModel(this);
+    //    proxyModel->setSourceModel(model);
+    //    ui->tableView->setModel(proxyModel);
+
+
+
 
 
 
@@ -111,6 +131,22 @@ MainWindow::MainWindow(QWidget *parent)
     //QModelIndex idx = dirModel->index("./uploaded"); //Set the root item
     QModelIndex idx = dirModel->index("../"); //Set the root item
     ui->treeView_DirTree->setRootIndex(idx);
+
+    // скрываем все столбцы дерева, кроме название аудио-файла
+    ui->treeView_DirTree->setColumnHidden(1,true);
+    ui->treeView_DirTree->setColumnHidden(2,true);
+    ui->treeView_DirTree->setColumnHidden(3,true);
+
+    // связываем значения некоторых столбцов SQLite с формами ввода текста и слайдерами.
+    // Конечно, данные можно править прямо в ячейках SQLite, но с помощью слайдеров удобнее.
+    mapper->setModel(model);
+    mapper->setItemDelegate(new QSqlRelationalDelegate(this));
+    mapper->addMapping(ui->lineEdit_TagSaveName, model->fieldIndex("TAG_NAME"));
+    mapper->addMapping(ui->label_TAGBeginTime, model->fieldIndex("TAG_START"));
+    //mapper->addMapping(ui->hSlider_TagTimeBegin, model->fieldIndex("TAG_NAME"));
+
+    connect(ui->tableView_Sqlite->selectionModel(), &QItemSelectionModel::currentRowChanged,
+                                            mapper, &QDataWidgetMapper::setCurrentModelIndex );
 
 }
 
@@ -400,6 +436,7 @@ void MainWindow::on_actionExit_triggered()
 }
 
 
+// если нажать на дереве папок (один клик)
 void MainWindow::on_treeView_DirTree_clicked(const QModelIndex &index)
 {
     //qDebug() << "вы кликнули по файлу в дереве с именем: " << " =[+ " << index.data(Qt::DisplayRole).toString() << "+]=";
@@ -442,9 +479,35 @@ void MainWindow::on_pushButton_TAGSave_clicked()
     query->bindValue(":TAGFINISH_Value", ui->label_TAGEndTime->text());
     query->bindValue(":TAGDUR_Value",    ui->label_TAG_Duration->text());
 
+
+
+
+
     query->exec();
-    model->submitAll();
+
     model->select();
+
+
+
+
+    //    QDataWidgetMapper *mapper = new QDataWidgetMapper(this);
+    //    mapper->setModel(model);
+    //    mapper->setItemDelegate(new BookDelegate(this));
+    //    mapper->addMapping(ui.titleEdit, model->fieldIndex("title"));
+    //    mapper->addMapping(ui.yearEdit, model->fieldIndex("year"));
+    //    mapper->addMapping(ui.authorEdit, authorIdx);
+    //    mapper->addMapping(ui.genreEdit, genreIdx);
+    //    mapper->addMapping(ui.ratingEdit, model->fieldIndex("rating"));
+
+    //    connect(ui.bookTable->selectionModel(),
+    //            &QItemSelectionModel::currentRowChanged,
+    //            mapper,
+    //            &QDataWidgetMapper::setCurrentModelIndex
+    //            );
+
+    //    ui.bookTable->setCurrentIndex(model->index(0, 0));
+    //    createMenuBar();
+
 
 
 //    QString query_ = QString("ALTER TABLE %1 ADD COLUMN %2 %3").arg(m_table).arg(m_name).arg(m_type);
@@ -473,7 +536,7 @@ void MainWindow::on_pushButton_TAGSave_clicked()
 void MainWindow::on_PushButton_TAGDel_clicked()
 {
     model->removeRow(row);
-    model->select();
+    //model->select();
 }
 
 
@@ -481,7 +544,9 @@ void MainWindow::on_tableView_Sqlite_clicked(const QModelIndex &index)
 {
     row = index.row();
 
-    qDebug() << "в таблице SQLite вы нажали на: " << index.data(Qt::DisplayRole).toString();
+    //qDebug() << "в таблице SQLite вы нажали на: " << index.data(Qt::DisplayRole).toString();
+    qDebug() << "в таблице SQLite вы нажали на: " << index.data().toString();
+    qDebug() << query->exec("SELECT * FROM AudioFiles WHERE ID=1;");
 
     // TODO!! LOAD TAG from DB
 }

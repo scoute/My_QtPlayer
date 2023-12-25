@@ -61,6 +61,25 @@
            <height>124</height>
           </rect>
          </property>
+         <widget class="QLabel" name="label_TAG">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>20</y>
+            <width>24</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="autoFillBackground">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>TAG</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
         </widget>
        </widget>
        <widget class="QTreeView" name="treeView_TagPlaylists"/>
@@ -261,15 +280,9 @@
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
-             <widget class="QLabel" name="label_TAG">
-              <property name="autoFillBackground">
-               <bool>false</bool>
-              </property>
+             <widget class="QPushButton" name="pushButton_TagPlay">
               <property name="text">
-               <string>TAG</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
+               <string>Play Tag</string>
               </property>
              </widget>
             </item>
@@ -359,13 +372,6 @@
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QPushButton" name="pushButton_TagPlay">
-                <property name="text">
-                 <string>Play Tag</string>
                 </property>
                </widget>
               </item>
