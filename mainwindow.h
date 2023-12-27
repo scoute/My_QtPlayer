@@ -110,5 +110,7 @@ private:
 
   QDataWidgetMapper *mapper = new QDataWidgetMapper(this);
 
+  QString audio_URL_prefix;
+
 };
 #endif // MAINWINDOW_H

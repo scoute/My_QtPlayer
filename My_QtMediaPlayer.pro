@@ -1,3 +1,9 @@
+# Please, set manual your target OS
+# WIN_OS - for desktop Windows
+# UNIX_OS - for desktop Linux and MAC
+# ANDROID_OS - for Android
+
+
 QT       += core gui multimedia sql widgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -13,7 +19,8 @@ SOURCES += \
     mainwindow.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    qsystemdetection.h
 
 FORMS += \
     mainwindow.ui

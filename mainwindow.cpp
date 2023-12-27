@@ -1,6 +1,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "qsystemdetection.h"
+
+
 
 /*
     ПОЛНОЕ ОПИСАНИЕ ПРОГРАММЫ.
@@ -240,9 +243,17 @@ void MainWindow::on_actionOpen_File_triggered()
 {
     QString FileName = QFileDialog::getOpenFileName(this,tr("Select Audio File"),
                                                          tr("MP3 Files (*.MP3)"));
-
     qDebug() << "Open FileName" << FileName;
-    M_Player->setMedia(QUrl("file://" + FileName));
+
+    QString audio_URL_prefix={""};
+    // если на момент компиляции qsystemdetection.h ОС=Linux, то прибавляем префикс "file://"
+    #if defined(Q_OS_LINUX)
+        audio_URL_prefix="file://";
+        qDebug() << "TARGET_OS= UNIX";
+    #endif
+
+
+    M_Player->setMedia(QUrl(audio_URL_prefix + FileName));
 
     QFileInfo File(FileName);
     ui->lbl_Value_File_Name->setText(File.fileName());
@@ -439,7 +450,7 @@ void MainWindow::on_actionExit_triggered()
 // если нажать на дереве папок (один клик)
 void MainWindow::on_treeView_DirTree_clicked(const QModelIndex &index)
 {
-    //qDebug() << "вы кликнули по файлу в дереве с именем: " << " =[+ " << index.data(Qt::DisplayRole).toString() << "+]=";
+    qDebug() << "вы кликнули по файлу в дереве с именем: " << " =[+ " << index.data(Qt::DisplayRole).toString() << "+]=";
 }
 
 
@@ -453,7 +464,24 @@ void MainWindow::on_treeView_DirTree_doubleClicked(const QModelIndex &index)
     qDebug() << "path=" << full_path_mp3;
 
     // загружаем новый аудио-файл в проигрыватель.
-    M_Player->setMedia(QUrl("file://" + full_path_mp3));
+    //    if (QOperatingSystemVersion::Windows == 1){
+    //        M_Player->setMedia(QUrl(full_path_mp3));
+    //    }
+
+    //    if (Q_OS_UNIX){
+    //        M_Player->setMedia(QUrl("file://" + full_path_mp3));
+    //    }
+
+
+    QString audio_URL_prefix={""};
+    // если в файле .pro задана переменная TARGET_OS=UNIX_OS, то прибавляем префикс "file://"
+    #if defined(Q_OS_LINUX)
+        audio_URL_prefix="file://";
+        qDebug() << "TARGET_OS= UNIX";
+    #endif
+
+    M_Player->setMedia(QUrl(audio_URL_prefix + full_path_mp3));
+
 
     // загружаем имя кликнутого файла в лейблу "File Name"
     QFileInfo File(index.data(Qt::DisplayRole).toString());
@@ -536,7 +564,7 @@ void MainWindow::on_pushButton_TAGSave_clicked()
 void MainWindow::on_PushButton_TAGDel_clicked()
 {
     model->removeRow(row);
-    //model->select();
+    model->select();
 }
 
 
