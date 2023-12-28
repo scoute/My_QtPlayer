@@ -1,9 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
-#include "qsystemdetection.h"
-
-
+//#include "qsystemdetection.h"
 
 /*
     ПОЛНОЕ ОПИСАНИЕ ПРОГРАММЫ.
@@ -32,6 +29,9 @@
     * отдельное окно со списком меток.
     * сохранения аудио-меток в БД sqlite3.
     *
+    * добавить "открыть папку с mp3" через INI.
+    *
+    * добавить уровень звука в БД!
     *
     * сканирование всех mp3 в папке и присвоение им md5sum в БД для исключения дублей.
     * возможность делиться аудио-метками (экспорт/импорт)
@@ -40,6 +40,12 @@
     *
     * генерация mp3-файла из временной метки с возможностью сохранения (если это не очень сложно).
 */
+
+
+
+
+
+
 
 
 
@@ -76,6 +82,9 @@ MainWindow::MainWindow(QWidget *parent)
     model->setTable("AudioFiles");
     model->select();
     ui->tableView_Sqlite->setModel(model);
+
+    // ячейки вывода таблицы БД подгоняем по ширине
+    ui->tableView_Sqlite->resizeColumnsToContents();
 
 
     //    model = new QSqlQueryModel(this);
@@ -166,13 +175,13 @@ QString MainWindow::timeToString(qint64 duration){
     if (duration||Mduration)
     {
         QTime   durTime((duration / 3600 / 1000) % 60, (duration / 60 / 1000) % 60, (duration / 1000) % 60, duration % 1000);
-        QString format = "mm:ss.zzz"; // zzz - значит миллисекунды
+        QString format = "hh:mm:ss.zzz"; // zzz - значит миллисекунды
 
-        // если длительность аудио больше часа, ставим "hh:mm:ss.zzz" вместо "mm:ss.zzz"
-        if ((duration / 1000) > 3600) // делим на 1000 потому что это миллисекунды
-        {
-            format = "hh:mm:ss.zzz";
-        }
+        //        // если длительность аудио больше часа, ставим "hh:mm:ss.zzz" вместо "mm:ss.zzz"
+        //        if ((duration / 1000) > 3600) // делим на 1000 потому что это миллисекунды
+        //        {
+        //            format = "hh:mm:ss.zzz";
+        //        }
         return durTime.toString(format);
     }
 
@@ -245,14 +254,14 @@ void MainWindow::on_actionOpen_File_triggered()
                                                          tr("MP3 Files (*.MP3)"));
     qDebug() << "Open FileName" << FileName;
 
-    QString audio_URL_prefix={""};
-    // если на момент компиляции qsystemdetection.h ОС=Linux, то прибавляем префикс "file://"
+    // для Linux прибавляем префикс "file://", для Windows префикс пустой.
     #if defined(Q_OS_LINUX)
-        audio_URL_prefix="file://";
-        qDebug() << "TARGET_OS= UNIX";
+       audio_URL_prefix="file://";
+    #elif defined(Q_OS_WIN)
+       audio_URL_prefix="";
     #endif
 
-
+    // загружаем новый файл в плеер.
     M_Player->setMedia(QUrl(audio_URL_prefix + FileName));
 
     QFileInfo File(FileName);
@@ -320,6 +329,8 @@ void MainWindow::on_hSlider_TagTimeBegin_sliderMoved(int position)
         duration_tag_begin=position;
         ui->label_TAGBeginTime->setText(MainWindow::timeToString(duration_tag_begin));
         ui->label_TAG_Duration->setText(MainWindow::timeToString(duration_tag_end - duration_tag_begin));
+
+        ui->lineEdit_TagStart->setText(QString::number(position));
     }
 }
 
@@ -356,6 +367,8 @@ void MainWindow::on_hSlider_TagTimeEnd_sliderMoved(int position)
 
         ui->label_TAGEndTime->setText(MainWindow::timeToString(duration_tag_end));
         ui->label_TAG_Duration->setText(MainWindow::timeToString(duration_tag_end - duration_tag_begin));
+
+        ui->lineEdit_TagFinish->setText(QString::number(duration_tag_end));
     }
 }
 
@@ -388,6 +401,8 @@ void MainWindow::on_pushButton_TAGSetBeginTime_clicked()
     ui->label_TAGBeginTime->setText(MainWindow::timeToString(duration_tag_begin));
     ui->hSlider_TagTimeBegin->setValue(ui->hSlider_AudioFileDuration->value());
 
+    ui->lineEdit_TagStart->setText(QString::number(ui->hSlider_AudioFileDuration->value()));
+
     // если при нажатии кнопки (TAG)BEGIN один из ползунков вышел за границу другого,
     // то второй ползунок смещается туда же, время начала и конца TAG labels становится одинаковым,
     // а длительность TAG становится 00:00:00 (естественно)
@@ -414,6 +429,8 @@ void MainWindow::on_pushButton_TAGSetEndTime_clicked()
 
     ui->label_TAGEndTime->setText(MainWindow::timeToString(duration_tag_end));
     ui->hSlider_TagTimeEnd->setValue(Mduration - ui->hSlider_AudioFileDuration->value());
+
+    ui->lineEdit_TagFinish->setText(QString::number(duration_tag_end));
 
     // если при нажатии кнопки (TAG)END один из ползунков вышел за границу другого,
     // то второй ползунок смещается туда же, время начала и конца TAG labels становится одинаковым,
@@ -463,23 +480,14 @@ void MainWindow::on_treeView_DirTree_doubleClicked(const QModelIndex &index)
 
     qDebug() << "path=" << full_path_mp3;
 
-    // загружаем новый аудио-файл в проигрыватель.
-    //    if (QOperatingSystemVersion::Windows == 1){
-    //        M_Player->setMedia(QUrl(full_path_mp3));
-    //    }
-
-    //    if (Q_OS_UNIX){
-    //        M_Player->setMedia(QUrl("file://" + full_path_mp3));
-    //    }
-
-
-    QString audio_URL_prefix={""};
-    // если в файле .pro задана переменная TARGET_OS=UNIX_OS, то прибавляем префикс "file://"
+    // для Linux прибавляем префикс "file://", для Windows префикс пустой.
     #if defined(Q_OS_LINUX)
-        audio_URL_prefix="file://";
-        qDebug() << "TARGET_OS= UNIX";
+       audio_URL_prefix="file://";
+    #elif defined(Q_OS_WIN)
+       audio_URL_prefix="";
     #endif
 
+    // загружаем новый аудио-файл в проигрыватель.
     M_Player->setMedia(QUrl(audio_URL_prefix + full_path_mp3));
 
 
@@ -487,8 +495,9 @@ void MainWindow::on_treeView_DirTree_doubleClicked(const QModelIndex &index)
     QFileInfo File(index.data(Qt::DisplayRole).toString());
     ui->lbl_Value_File_Name->setText(File.fileName());
 
-    // запускаем проигрыватель через функцию.
+    // запускаем проигрыватель через метод.
     MainWindow::on_pushButton_Play_clicked();
+
 }
 
 
@@ -575,7 +584,19 @@ void MainWindow::on_tableView_Sqlite_clicked(const QModelIndex &index)
     //qDebug() << "в таблице SQLite вы нажали на: " << index.data(Qt::DisplayRole).toString();
     qDebug() << "в таблице SQLite вы нажали на: " << index.data().toString();
     qDebug() << query->exec("SELECT * FROM AudioFiles WHERE ID=1;");
+}
 
-    // TODO!! LOAD TAG from DB
+
+void MainWindow::on_lineEdit_TagStart_returnPressed()
+{
+    ui->hSlider_TagTimeBegin->setValue(ui->lineEdit_TagStart->text().toInt());
+    ui->label_TAGBeginTime->setText(MainWindow::timeToString(ui->lineEdit_TagStart->text().toInt()));
+}
+
+
+void MainWindow::on_lineEdit_TagFinish_returnPressed()
+{
+    ui->hSlider_TagTimeEnd->setValue(ui->lineEdit_TagFinish->text().toInt());
+    ui->label_TAGEndTime->setText(MainWindow::timeToString(ui->lineEdit_TagFinish->text().toInt()));
 }
 

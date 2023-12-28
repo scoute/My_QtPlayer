@@ -91,6 +91,10 @@ private slots:
 
   void on_tableView_Sqlite_clicked(const QModelIndex &index);
 
+  void on_lineEdit_TagStart_returnPressed();
+
+  void on_lineEdit_TagFinish_returnPressed();
+
 private:
   void updateduration(qint64 duration);
   Ui::MainWindow *ui;
@@ -111,6 +115,7 @@ private:
   QDataWidgetMapper *mapper = new QDataWidgetMapper(this);
 
   QString audio_URL_prefix;
+
 
 };
 #endif // MAINWINDOW_H

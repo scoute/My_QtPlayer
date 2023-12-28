@@ -20,7 +20,7 @@ SOURCES += \
 
 HEADERS += \
     mainwindow.h \
-    qsystemdetection.h
+#    qsystemdetection.h
 
 FORMS += \
     mainwindow.ui
